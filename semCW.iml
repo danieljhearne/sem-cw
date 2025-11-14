@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$" dumb="true">
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java/com" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java/com/napier" type="java-test-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java/com/napier/sem" isTestSource="true" />
+    </content>
+  </component>
+</module>
