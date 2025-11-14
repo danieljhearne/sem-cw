@@ -22,5 +22,16 @@ public class Country {
     }
 
     //Getters
+    public String getCode() {return code;}
+    public String getName() {return name;}
+    public String getContident() {return contident;}
+    public String getRegion() {return region;}
+    public long getPopulation() {return population;}
+    public String getCapital() {return capital;}
 
+    //String overide. Making it readable
+    public String toString() {
+        return String.format("%s (%s) - %s - Population: %,d", 
+                           name, code, continent, population);
+    }
 }
