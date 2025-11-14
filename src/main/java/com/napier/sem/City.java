@@ -1,9 +1,14 @@
 package com.napier.sem;
 
 /**
- * Data object representing a city.
+ * Immutable data object representing a city. Instances of this
+ * class encapsulate the name of the city, the country it belongs
+ * to, the district (if any) and the population. All fields are
+ * provided via the constructor and there are only getters so that
+ * values cannot be changed after creation.
  */
 public class City {
+
     private final String name;
     private final String country;
     private final String district;
@@ -16,17 +21,25 @@ public class City {
         this.population = population;
     }
 
-    public String getName() { return name; }
-    public String getCountry() { return country; }
-    public String getDistrict() { return district; }
-    public long getPopulation() { return population; }
+    public String getName() {
+        return name;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public long getPopulation() {
+        return population;
+    }
 
     @Override
     public String toString() {
-        return String.format("%s, %s (%s) – Population: %,d",
-                             name,
-                             country,
-                             district == null ? "no district" : district,
-                             population);
+        String districtName = (district == null || district.isEmpty()) ? "no district" : district;
+        return String.format("%s, %s (%s) – Population: %,d", name, country, districtName, population);
     }
 }
