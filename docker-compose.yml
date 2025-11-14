@@ -8,6 +8,6 @@ services:
   # Build the db as name db from the Dockerfile in the db folder
   # exposing the port if we want to run code outside a container
   db:
-    build: world-db/.
+    build: world-db/
     ports:
       - "33060:3306"

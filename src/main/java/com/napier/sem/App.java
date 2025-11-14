@@ -1,81 +1,61 @@
 package com.napier.sem;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
-/**
- * Entry point for the population reporting application.
- */
-public class App {
-
-    /**
-     * Establish a connection to the MySQL `world` database.
-     * This uses the same settings as the Docker-compose setup.
-     */
-    public static Connection connect() {
-        try {
-            // Load database driver
+public class App
+{
+    public static void main(String[] args)
+    {
+        try
+        {
+            // Load Database driver
             Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            System.err.println("Could not load SQL driver");
-            return null;
+        }
+        catch (ClassNotFoundException e)
+        {
+            System.out.println("Could not load SQL driver");
+            System.exit(-1);
         }
 
-        Connection connection = null;
-        int retries = 10;
-
-        for (int i = 0; i < retries; i++) {
+        // Connection to the database
+        Connection con = null;
+        int retries = 100;
+        for (int i = 0; i < retries; ++i)
+        {
             System.out.println("Connecting to database...");
-            try {
+            try
+            {
+                // Wait a bit for db to start
                 Thread.sleep(1000);
-                // IMPORTANT: this URL/creds must match your docker-compose/db
-                connection = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:33060/world?useSSL=false&allowPublicKeyRetrieval=true",
-                        "root",
-                        "example"
-                );
+                // Connect to database
+                con = DriverManager.getConnection("jdbc:mysql://db:3306/world?useSSL=false&allowPublicKeyRetrieval=true", "root", "example");
                 System.out.println("Successfully connected");
+                // Wait a bit
+                Thread.sleep(1000);
+                // Exit for loop
                 break;
-            } catch (SQLException e) {
-                System.out.println("Failed to connect to database attempt " + i);
-                System.out.println(e.getMessage());
-            } catch (InterruptedException e) {
+            }
+            catch (SQLException sqle)
+            {
+                System.out.println("Failed to connect to database attempt " + Integer.toString(i));
+                System.out.println(sqle.getMessage());
+            }
+            catch (InterruptedException ie)
+            {
                 System.out.println("Thread interrupted? Should not happen.");
             }
         }
 
-        return connection;
-    }
-
-    public static void main(String[] args) {
-        Connection connection = connect();
-        if (connection == null) {
-            System.err.println("Failed to connect to database. Exiting.");
-            return;
-        }
-
-        try {
-            // Use the shared connection for all reports
-            ReportGenerator reportGenerator = new ReportGenerator(connection);
-
-            System.out.println("Countries by population (world):");
-            reportGenerator.getAllCountries()
-                    .forEach(System.out::println);
-
-            System.out.println("\nCities by population (world):");
-            reportGenerator.getAllCities()
-                    .forEach(System.out::println);
-
-            System.out.println("\nCapital cities by population (world):");
-            reportGenerator.getAllCapitalCities()
-                    .forEach(System.out::println);
-
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                System.err.println("Error closing connection: " + e.getMessage());
+        if (con != null)
+        {
+            try
+            {
+                // Close connection
+                con.close();
+            }
+            catch (Exception e)
+            {
+                System.out.println("Error closing connection to database");
             }
         }
     }
