@@ -6,9 +6,9 @@ public class App
 {
     public static void main(String[] args)
     {
+        // Load DB driver
         try
         {
-            // Load Database driver
             Class.forName("com.mysql.cj.jdbc.Driver");
         }
         catch (ClassNotFoundException e)
@@ -17,7 +17,6 @@ public class App
             System.exit(-1);
         }
 
-        // Connection to the database
         Connection con = null;
         int retries = 100;
         for (int i = 0; i < retries; ++i)
@@ -25,19 +24,18 @@ public class App
             System.out.println("Connecting to database...");
             try
             {
-                // Wait a bit for db to start
                 Thread.sleep(1000);
-                // Connect to database
-                con = DriverManager.getConnection("jdbc:mysql://db:3306/world?useSSL=false&allowPublicKeyRetrieval=true", "root", "example");
+                con = DriverManager.getConnection(
+                        "jdbc:mysql://db:3306/world?useSSL=false&allowPublicKeyRetrieval=true",
+                        "root",
+                        "example");
                 System.out.println("Successfully connected");
-                // Wait a bit
                 Thread.sleep(1000);
-                // Exit for loop
                 break;
             }
             catch (SQLException sqle)
             {
-                System.out.println("Failed to connect to database attempt " + Integer.toString(i));
+                System.out.println("Failed to connect to database attempt " + i);
                 System.out.println(sqle.getMessage());
             }
             catch (InterruptedException ie)
@@ -48,15 +46,52 @@ public class App
 
         if (con != null)
         {
+            // ----- CALL YOUR REPORT METHODS HERE -----
+            generateTopCountriesByPopulationReport(con, 10);
+
+            // Close connection
             try
             {
-                // Close connection
                 con.close();
             }
             catch (Exception e)
             {
                 System.out.println("Error closing connection to database");
             }
+        }
+    }
+
+    /**
+     * Example report:
+     * Top N countries in the world by population
+     */
+    public static void generateTopCountriesByPopulationReport(Connection con, int limit)
+    {
+
+        String sql =
+                "SELECT Code, Name, Continent, Population " +
+                        "FROM country " +
+                        "ORDER BY Population DESC " +
+                        "LIMIT ?";
+
+        try
+        {
+
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, limit);
+
+
+            ResultSet rset = pstmt.executeQuery();
+
+
+            System.out.println("--------------------------------------------------------");
+
+            rset.close();
+            pstmt.close();
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to generate report: " + e.getMessage());
         }
     }
 }
