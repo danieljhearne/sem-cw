@@ -14,12 +14,6 @@ public class ReportGenerator {
 
     private final Connection connection;
 
-
-    public ReportGenerator() {
-        this.connection = App.connect();
-    }
-
-
     public ReportGenerator(Connection connection) {
         this.connection = connection;
     }
